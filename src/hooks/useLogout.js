@@ -1,4 +1,4 @@
-import { useState } from 'reac';
+import { useState } from 'react';
 //FIREBASE
 import { projectAuth } from '../firebase/config';
 // CONTEXT
