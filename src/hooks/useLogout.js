@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 //FIREBASE
 import { projectAuth } from '../firebase/config';
 // CONTEXT
@@ -6,6 +6,7 @@ import { useAuthContext } from './useAuthContext';
 
 export const useLogout = () => {
     // STATE
+    const [isCancelled, setIsCancelled] = useState(false);
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(false);
     const { dispatch } = useAuthContext();
@@ -23,13 +24,25 @@ export const useLogout = () => {
             dispatch({ type : 'LOUGOUT' });
 
             // reset state
-            setIsPending(false);
-            setError(null);
+            if(!isCancelled){
+                //after component unmounts we don't allow for component to update state
+                setIsPending(false);
+                setError(null);
+            }
         } catch(err){
             console.log(err.message);
-            setError(err.message);
-            setIsPending(false);
+            if(!isCancelled){
+                //same here
+                setError(err.message);
+                setIsPending(false);
+            }
         }
     }
+
+    //We need a cleanup function to abort with the async functionality above
+    useEffect(() => {
+        return () => setIsCancelled(true)
+    }, []);
+
     return { logout, error, isPending };
 }
