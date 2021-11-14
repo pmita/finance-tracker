@@ -6,18 +6,26 @@ import Login from './pages/login/Login';
 import Signup from './pages/signup/Signup';
 // COMPONENTS
 import Navbar from './components/Navbar';
+// HOOKS
+import { useAuthContext } from './hooks/useAuthContext';
+
 
 function App() {
+  // STATE
+  const { authIsReady } = useAuthContext();
+
   return (
     <div className="App">
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
-        </Routes>
-      </Router>
+      {authIsReady && (
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+          </Routes>
+        </Router>
+      )}
     </div>
   );
 }
